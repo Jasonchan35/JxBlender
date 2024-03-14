@@ -22,6 +22,8 @@ Enjoy !
 - Graphic Editor Tool Panel
 	- Quick Show / Hide curves
 	- Tool buttons for Keyframe Handle Type, Curve Extrapolation
+	- Copy First Key to Last, Wrap keys to half cycle
+	- Set Current Sub Frame (non-integer frame)
 - Animation Re-targeting
 	- FK / IK mappings
 	- Load / Save mappings present to file

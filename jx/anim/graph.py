@@ -82,6 +82,19 @@ class OP_InsertKeyframe(jx.types.Operator):
 			self.insertKeyToSelectedPoseBones()
 		return True
 
+class OP_StepFrame(jx.types.Operator):
+	bl_idname = 'graph.jx_anim_step_frame'
+	bl_label = 'Step Frame'
+	bl_options = {"REGISTER", "UNDO"}
+
+	inStep : bpy.props.FloatProperty()
+
+	def execute(self, context):
+		f = bpy.context.scene.frame_current_final + self.inStep
+		# f = round(f * 10) / 10
+		jx.anim.frame_set_float(f)
+		return {'FINISHED'}
+
 class OP_SetHandleType(jx.types.Operator):
 	bl_idname = 'graph.jx_anim_set_handle_type'
 	bl_label = 'SetKeyframeEasingType'
@@ -404,6 +417,13 @@ class AnimGraphEditorShowChannelsPanel(jx.types.Panel):
 		row = col.row(align=True)
 		row.operator("pose.paths_calculate", text="Motion Path")
 		row.operator("pose.paths_clear", text="Clear")
+
+		col.separator()
+		row = col.split(factor=0.8, align=True)
+		row.prop(bpy.context.scene, "frame_float")
+		row2 = row.row(align=True)
+		row2.operator(OP_StepFrame.bl_idname, text="<").inStep = -0.25
+		row2.operator(OP_StepFrame.bl_idname, text=">").inStep =  0.25
 
 
 class AnimGraphEditorKeyframePanel(jx.types.Panel):
