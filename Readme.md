@@ -8,23 +8,6 @@
 2. Blender Menu > Edit > Preferences > Add-ons (page)
 3. Install button and pick the downloaded jx.zip
 
-For export setting:
-1. Add file "JxProject.json" in project root folder, for example "c:\my_porject"
-2. with content below
-```
-{
-	"require_fps": 30,
-	"require_length_unit": "METERS",
-	"require_scale_length": 1,
-	"rawDataPath": "RawData",
-	"rawDataExportDir": "ExportFolder"
-}
-```
-3. In this case, file will export as below
-	- From "c:\MyPorject\RawData\ABC\Mesh.blend"
-	- To   "c:\MyProject\ExportFolder\ABC\Mesh.fbx"
-	- Animation filename will be "Mesh@anim_name.fbx"
-
 Enjoy !
 
 ## Features
@@ -42,3 +25,26 @@ Enjoy !
 - Animation Re-targeting
 	- FK / IK mappings
 	- Load / Save mappings present to file
+
+
+### Project settings:
+Add file "JxProject.json" in project root folder, for example "c:\my_porject" \
+with content below:
+```
+{
+	"require_fps": 30,
+	"require_length_unit": "METERS",
+	"require_scale_length": 1,
+	"rawDataPath": "RawData",
+	"rawDataExportDir": "ExportFolder"
+}
+```
+In this case, file will export as below:
+- From "c:\MyPorject\RawData\ABC\Mesh.blend"
+- To   "c:\MyProject\ExportFolder\ABC\Mesh.fbx"
+
+NLA track will export to "Mesh@track_name.fbx"
+
+if you want to remove 100 scale in Unreal/Unity, please set require_scale_length to 0.01\
+but all objects in blender scene might need to correct the size manaually\
+and require_length_unit only for blender UI display, which does not affect actual export size at all
