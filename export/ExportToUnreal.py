@@ -7,10 +7,6 @@ import jx.file
 import jx.types
 import jx.util
 
-require_fps = 30
-require_length_unit = "CENTIMETERS" # "METERS"
-require_scale_length = 0.01
-
 export_opt_axis_forward = 'X'
 export_opt_axis_up = 'Z'
 export_opt_use_space_transform = True
@@ -496,32 +492,40 @@ class ExportPanel(jx.types.Panel):
 		# box.prop(context.scene.render, "fps")
 		# box.prop(context.scene.unit_settings, "length_unit")
 
-		current_fps = context.scene.render.fps
-		if require_fps != current_fps:
-			col = self.layout.box().column()
-			col.alert = True
-			col.label(icon="ERROR", text="Invalid FPS")
-			col.label(text=f"Current: {current_fps}")
-			col.label(text=f"Require: {require_fps}")
-			col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "FPS"
+		proj = jx.project.get()
+		require_fps 			= proj.require_fps()
+		require_scale_length	= proj.require_scale_length()
+		require_length_unit		= proj.require_length_unit()
 
-		current_length_unit = context.scene.unit_settings.length_unit
-		if require_length_unit != current_length_unit:
-			col = self.layout.box().column()
-			col.alert = True
-			col.label(icon="ERROR", text="Invalid Length Unit")
-			col.label(text=f"Current: {current_length_unit}")
-			col.label(text=f"Require: {require_length_unit}")
-			col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "LENGTH_UNIT"
+		if require_fps:
+			current_fps = context.scene.render.fps
+			if require_fps != current_fps:
+				col = self.layout.box().column()
+				col.alert = True
+				col.label(icon="ERROR", text="Invalid FPS")
+				col.label(text=f"Current: {current_fps}")
+				col.label(text=f"Require: {require_fps}")
+				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "FPS"
 
-		current_scale_length = context.scene.unit_settings.scale_length
-		if not jx.math.almost_eq(require_scale_length, current_scale_length):
-			col = self.layout.box().column()
-			col.alert = True
-			col.label(icon="ERROR", text="Invalid Unit Scale (Scale Length)")
-			col.label(text=f"Current: {current_scale_length}")
-			col.label(text=f"Require: {require_scale_length}")
-			col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "SCALE_LENGTH"
+		if require_length_unit:
+			current_length_unit = context.scene.unit_settings.length_unit
+			if require_length_unit != current_length_unit:
+				col = self.layout.box().column()
+				col.alert = True
+				col.label(icon="ERROR", text="Invalid Length Unit")
+				col.label(text=f"Current: {current_length_unit}")
+				col.label(text=f"Require: {require_length_unit}")
+				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "LENGTH_UNIT"
+
+		if require_scale_length:
+			current_scale_length = context.scene.unit_settings.scale_length
+			if not jx.math.almost_eq(require_scale_length, current_scale_length):
+				col = self.layout.box().column()
+				col.alert = True
+				col.label(icon="ERROR", text="Invalid Unit Scale (Scale Length)")
+				col.label(text=f"Current: {current_scale_length}")
+				col.label(text=f"Require: {require_scale_length}")
+				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "SCALE_LENGTH"
 
 		col = self.layout.column(align=True)
 		col.operator(OP_ExportMeshToFbx.bl_idname, text="Export Mesh")

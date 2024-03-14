@@ -16,6 +16,10 @@ class Project:
 		self._rawDataPath = None
 		self._rawDataExportDir = None
 
+		self._require_fps = None # 30
+		self._require_length_unit = None # "CENTIMETERS"
+		self._require_scale_length = None # 0.01
+
 		curFile = jx.file.currentBlenderFilename()
 		if not curFile:
 			raise RuntimeError("no path for current file, please save file is not yet saved")
@@ -33,10 +37,9 @@ class Project:
 			root = parent
 
 		self._root = root
-		self._rawDataPath = root + "/RawData"
 		self._loadJson(projectFilename)
 		self._curFile = curFile
-		self._curFileRelPath = jx.path.relpath(curFile, self._rawDataPath)
+		self._curFileRelPath = jx.path.relpath(curFile, self.rawDataPath())
 
 	def name(self):
 		return self._name
@@ -50,7 +53,15 @@ class Project:
 	def curFileRelPath(self):
 		return self._curFileRelPath
 
+	def rawDataPath(self):
+		if not self._rawDataPath: return self._root
+		if os.path.isabs(self._rawDataPath): return self._rawDataPath
+		return jx.path.realpath(self._root + "/" + self._rawDataPath)
+
 	def rawDataExportDir(self):
+		if not self._rawDataExportDir: return self._root
+		if os.path.isabs(self._rawDataExportDir):
+			return self._rawDataExportDir
 		return jx.path.realpath(self._root + "/" + self._rawDataExportDir)
 
 	def exportFilename(self):
@@ -61,6 +72,10 @@ class Project:
 		p = f"{self.root()}/Unreal/{self._curFileRelPath}"
 		p = jx.path.remove_ext(p)
 		return jx.path.realpath(p)
+	
+	def require_fps(self): return self._require_fps
+	def require_length_unit(self): return self._require_length_unit
+	def require_scale_length(self): return self._require_scale_length
 
 	def _loadJson(self, filename):
 		print(f"loadJson({filename})")
@@ -69,11 +84,16 @@ class Project:
 
 		if "rawDataExportDir" not in data:
 			raise RuntimeError('missing "rawDataExportDir" in JxProject.json')
-		self._rawDataExportDir = data['rawDataExportDir']
+		
+		self._rawDataPath 			= data.get('rawDataPath')
+		self._rawDataExportDir 		= data.get('rawDataExportDir')
+		self._require_fps 			= data.get('require_fps')
+		self._require_length_unit 	= data.get('require_length_unit')
+		self._require_scale_length 	= data.get('require_scale_length')
 
 def get():
 	global _instance
-	if not _instance or _instance._curFile != bpy.data.filepath:
+	if not _instance or _instance._curFile != jx.file.currentBlenderFilename():
 		_instance = Project()
 	return _instance
 
