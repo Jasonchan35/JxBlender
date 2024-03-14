@@ -1,10 +1,12 @@
 # JxBlender - addon
 
+[Demo Video](screenshots/JxBlender%20-%202024-03-13_c.mp4)
+
 ## Install
 
 Download latest jx.zip from:
 
-https://github.com/Jasonchan35/JxBlender/releases/tag/2024-03-13
+https://github.com/Jasonchan35/JxBlender/releases/tag/2024-03-14
 
 Blender Menu > Edit > Preferences > Add-ons (page) > Install button
 and pick the downloaded jx.zip
