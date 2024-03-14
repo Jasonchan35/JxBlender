@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 bl_info = {
-	"name": "jx",
+	"name": "JxBlender",
 	"author": "",
 	"version": (0, 1, 1),
 	"blender": (3, 0, 0),
