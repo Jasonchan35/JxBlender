@@ -4,12 +4,9 @@
 
 ## Install
 
-Download latest jx.zip from:
-
-https://github.com/Jasonchan35/JxBlender/releases/tag/2024-03-14
-
-Blender Menu > Edit > Preferences > Add-ons (page) > Install button
-and pick the downloaded jx.zip
+1. Download latest jx.zip from https://github.com/Jasonchan35/JxBlender/releases
+1. Blender Menu > Edit > Preferences > Add-ons (page)
+1. Install button and pick the downloaded jx.zip
 
 enjoy !
 
