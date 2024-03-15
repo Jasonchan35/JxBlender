@@ -416,6 +416,7 @@ class AnimGraphEditorShowChannelsPanel(jx.types.Panel):
 		col.separator()
 		row = col.row(align=True)
 		row.operator("pose.paths_calculate", text="Motion Path")
+		row.operator("object.paths_update_visible", text="Update")
 		row.operator("pose.paths_clear", text="Clear")
 
 		col.separator()
