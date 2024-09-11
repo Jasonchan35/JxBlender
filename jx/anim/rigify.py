@@ -63,6 +63,19 @@ def removeAllIkStretch(rig):
 
 	jx.anim.evaluateAnimation()
 
+def removeSplineIkYScale(rig):
+	if not rig or rig.type != 'ARMATURE':
+		return
+	for poseBone in rig.pose.bones:
+		if "tentacle" in poseBone.name:
+			poseBone.custom_shape_scale_xyz = (0.5, 0.5, 0.5)
+
+		for con in poseBone.constraints:
+			if isinstance(con, bpy.types.SplineIKConstraint):
+				con.y_scale_mode = "BONE_ORIGINAL"
+
+
+
 def isMetarig(obj):
 	if not (obj and obj.data and obj.type == 'ARMATURE'):
 		return False
@@ -406,6 +419,7 @@ class OP_RemoveAllIkStretch(jx.types.Operator):
 	def execute(self, context):
 		for obj in bpy.context.selected_objects:
 			removeAllIkStretch(obj)
+			removeSplineIkYScale(obj)
 
 		return {'FINISHED'}
 	
@@ -543,7 +557,7 @@ class RigifyCreatePanel(jx.types.Panel):
 		if context.object == None: return
 
 		self.layout.operator(OP_CreateDeformRig.bl_idname, text="Deform Rig - Create")
-		# self.layout.operator(OP_RemoveAllIkStretch.bl_idname)
+		self.layout.operator(OP_RemoveAllIkStretch.bl_idname)
 		self.layout.operator(OP_DeformRigBindSkin.bl_idname, text="Bind Skin")
 
 		row = self.layout.row(align=True)
