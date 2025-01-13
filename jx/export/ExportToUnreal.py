@@ -13,7 +13,7 @@ export_opt_use_space_transform = True
 export_opt_use_armature_deform_only = True
 
 export_opt_global_scale = 1
-export_opt_apply_unit_scale = False
+export_opt_apply_unit_scale = True
 export_opt_apply_scale_options = "FBX_SCALE_ALL" # keep all object's transform scale to 1.0 after export
 
 export_opt_mesh_smooth_type = "EDGE"
