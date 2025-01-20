@@ -3,7 +3,8 @@ import jx.util
 
 def safeSetPropValue(target, propName, value):
 	if propName in target:
-		target[propName] = value
+		if hasattr(target, propName):
+			target[propName] = value
 
 def resetAllBonesTransforms(rig):
 	if not rig or rig.type != 'ARMATURE': return
