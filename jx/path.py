@@ -22,7 +22,7 @@ def remove_ext(p:str):
 	return os.path.splitext(p)[0]
 
 def change_ext(p:str, new_ext:str):
-	return remove_ext + new_ext
+	return remove_ext(p) + new_ext
 
 def normpath(p:str):
 	return os.path.normpath(p)
