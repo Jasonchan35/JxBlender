@@ -9,7 +9,6 @@ _instance = None
 
 class Project:
 	def __init__(self):
-		self._name = None
 		self._root = None
 		self._curFile = None
 		self._relPath = None
@@ -41,9 +40,6 @@ class Project:
 		self._curFile = curFile
 		self._curFileRelPath = jx.path.relpath(curFile, self.rawDataPath())
 
-	def name(self):
-		return self._name
-	
 	def root(self):
 		return self._root
 
@@ -82,9 +78,12 @@ class Project:
 		with open(filename, 'r') as f:
 			data = json.load(f)
 
+		if "rawDataPath" not in data:
+			raise RuntimeError('missing "rawDataPath" in JxProject.json')
+
 		if "rawDataExportDir" not in data:
 			raise RuntimeError('missing "rawDataExportDir" in JxProject.json')
-		
+
 		self._rawDataPath 			= data.get('rawDataPath')
 		self._rawDataExportDir 		= data.get('rawDataExportDir')
 		self._require_fps 			= data.get('require_fps')

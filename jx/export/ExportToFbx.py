@@ -17,19 +17,20 @@ export_opt_apply_unit_scale = True
 export_opt_apply_scale_options = "FBX_SCALE_ALL" # keep all object's transform scale to 1.0 after export
 
 export_opt_mesh_smooth_type = "EDGE"
-export_opt_add_leaf_bones = False # not needed in Unreal
+export_opt_add_leaf_bones = False # not needed in Unreal / Unity
 export_opt_path_mode = "RELATIVE"
 export_opt_use_custom_props = True
 export_opt_use_metadata = True
 
 
 class OP_Export(jx.types.Operator):
-	bl_idname = "scene.jx_export_to_unreal"
-	bl_label = "Export to Unreal"
+	bl_idname = "scene.jx_export_to_fbx"
+	bl_label = "Export to FBX"
 	bl_options = {"REGISTER", "UNDO"}
 
-	def __init__(self) -> None:
-		super().__init__()
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+
 		self.outInfo_materials = {}
 		self.outInfo_textures = {}
 		self.outInfo_objects = {}
@@ -39,6 +40,9 @@ class OP_Export(jx.types.Operator):
 		self.exportList_materials = set()
 		self.exportList_textures = set()
 		self.exportList_armatures = set()
+
+	def __del__(self):
+		super().__del__()
 
 	def exportObject(self, obj:bpy.types.Object):
 		print(f"exportObject \"{obj.name}\"")
@@ -400,7 +404,7 @@ class OP_Export(jx.types.Operator):
 			pass
 		
 class OP_ExportAnimTrackToFbx(OP_Export):
-	bl_idname = "scene.jx_export_to_unreal_anim_track"
+	bl_idname = "scene.jx_export_to_fbx_anim_track"
 	bl_label = "Export Anim Track"
 	bl_options = {"REGISTER", "UNDO"}
 
@@ -424,7 +428,7 @@ class OP_ExportAnimTrackToFbx(OP_Export):
 		return {'FINISHED'}
 
 class OP_ExportMeshToFbx(OP_Export):
-	bl_idname = "scene.jx_export_to_unreal_mesh"
+	bl_idname = "scene.jx_export_to_fbx_mesh"
 	bl_label = "Export Mesh"
 	bl_options = {"REGISTER", "UNDO"}
 
@@ -445,19 +449,19 @@ class OP_ExportMeshToFbx(OP_Export):
 	def execute(self, context):
 		# print(f"\n\n==== {self.__class__.__module__}.{self.__class__.__name__} ====")
 		self.doExport()
-		return {'FINISHED'}
+		return {'FINISHED'}	
 
-class JX_MT_MainMenu_ExportToUnreal(jx.types.Menu):
-	bl_idname = 'JX_MT_MainMenu_ExportToUnreal'
-	bl_label = 'ExportToUnreal'
+class JX_MT_MainMenu_ExportToFbx(jx.types.Menu):
+	bl_idname = 'JX_MT_MainMenu_ExportToFbx'
+	bl_label = 'Export To Fbx'
 
 	def draw(self, context):
 		self.layout.operator(OP_ExportMeshToFbx.bl_idname)
-		self.layout.operator(OP_ExportAnimTrackToFbx.bl_idname, text='Selected Track').allTracks = False
-		self.layout.operator(OP_ExportAnimTrackToFbx.bl_idname, text='All Tracks').allTracks = True
+		self.layout.operator(OP_ExportAnimTrackToFbx.bl_idname, text='Export Animation - Selected').allTracks = False
+		self.layout.operator(OP_ExportAnimTrackToFbx.bl_idname, text='Export Animation - All').allTracks = True
 
 class OP_FixSceneUnit(jx.types.Operator):
-	bl_idname = "scene.jx_export_to_unreal_fix_scene_unit"
+	bl_idname = "scene.jx_export_to_fbx_fix_scene_unit"
 	bl_label = "Fix Scene Unit"
 	bl_options = {"REGISTER", "UNDO"}
 
@@ -481,7 +485,7 @@ class OP_FixSceneUnit(jx.types.Operator):
 
 class ExportPanel(jx.types.Panel):
 	bl_idname = "JX_PT_EXPORT_PANEL"
-	bl_label = "(JX) Export - To Unreal"
+	bl_label = "(JX) Export To Fbx"
 	bl_order = 2000
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"

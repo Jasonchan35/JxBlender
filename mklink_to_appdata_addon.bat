@@ -2,7 +2,7 @@
 %~d0
 cd %~dp0
 
-set DST_PATH=%AppData%\Blender Foundation\Blender\4.2\scripts\addons\
+set DST_PATH=%AppData%\Blender Foundation\Blender\4.5\scripts\addons\
 
 mkdir "%DST_PATH%"
 

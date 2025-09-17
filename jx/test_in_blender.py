@@ -26,4 +26,4 @@ def test_create_deform_rig():
 
 #gen_rig()
 #test_create_deform_rig()
-#bpy.ops.jx.export_to_unreal_all_anim_tracks()
+#bpy.ops.jx.export_to_fbx_all_anim_tracks()

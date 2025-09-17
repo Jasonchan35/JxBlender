@@ -16,7 +16,7 @@ class JX_MT_MainMenu(jx.types.Menu):
 #		layout.label(text="This is a label")
 		layout.operator(jx.addon.OP_Reload.bl_idname)
 		layout.separator()
-		layout.menu(jx.export.ExportToUnreal.JX_MT_MainMenu_ExportToUnreal.bl_idname)
+		layout.menu(jx.export.ExportToFbx.JX_MT_MainMenu_ExportToFbx.bl_idname)
 		layout.menu(jx.project.JX_MT_MainMenu_Project.bl_idname)
 		layout.menu(jx.custom_prop.JX_MT_MainMenu_CustomProp.bl_idname)
 

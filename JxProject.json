@@ -1,3 +1,4 @@
 {
-	"rawDataExportDir": "JxExport"
+	"rawDataPath": "RawData",
+	"rawDataExportDir": "Unreal/JxLocalTemp/JxAutoImport"	
 }
