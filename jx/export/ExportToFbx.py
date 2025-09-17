@@ -206,7 +206,7 @@ class OP_Export(jx.types.Operator):
 		for tex in self.exportList_textures:
 			self.exportTexture(tex)
 
-		jx.json.saveToFile(self.outInfo, self.outFilename + ".fbx.json")
+		jx.json.saveToFile(self.outInfo, self.outFilename + ".fbx_jx_info")
 		jx.selection.select(self.exportList_objects)
 
 		if True:
