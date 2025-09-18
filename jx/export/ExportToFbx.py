@@ -468,17 +468,22 @@ class OP_FixSceneUnit(jx.types.Operator):
 	mode: bpy.props.StringProperty()
 
 	def execute(self, context):
+		proj 				= jx.project.get()
+		requireFps 			= proj.requireFps()
+		requireScaleLength	= proj.requireScaleLength()
+		requireLengthUnit	= proj.requireLengthUnit()
+				
 		if self.mode == "FPS":
-			bpy.context.scene.render.fps = require_fps
+			bpy.context.scene.render.fps = requireFps
 
 		elif self.mode == "LENGTH_UNIT":
-			bpy.context.scene.unit_settings.length_unit = require_length_unit
+			bpy.context.scene.unit_settings.length_unit = requireLengthUnit
 
 		elif self.mode == "SCALE_LENGTH":
-			if jx.math.almost_eq0(require_scale_length):
+			if jx.math.almost_eq0(requireScaleLength):
 				raise RuntimeError("Cannot set unt scale length to zero !!")
 
-			bpy.context.scene.unit_settings.scale_length = require_scale_length
+			bpy.context.scene.unit_settings.scale_length = requireScaleLength
 
 		return {'FINISHED'}
 
@@ -496,39 +501,39 @@ class ExportPanel(jx.types.Panel):
 		# box.prop(context.scene.render, "fps")
 		# box.prop(context.scene.unit_settings, "length_unit")
 
-		proj = jx.project.get()
-		require_fps 			= proj.require_fps()
-		require_scale_length	= proj.require_scale_length()
-		require_length_unit		= proj.require_length_unit()
+		proj 				= jx.project.get()
+		requireFps 			= proj.requireFps()
+		requireScaleLength	= proj.requireScaleLength()
+		requireLengthUnit	= proj.requireLengthUnit()
 
-		if require_fps:
+		if requireFps:
 			current_fps = context.scene.render.fps
-			if require_fps != current_fps:
+			if requireFps != current_fps:
 				col = self.layout.box().column()
 				col.alert = True
 				col.label(icon="ERROR", text="Invalid FPS")
 				col.label(text=f"Current: {current_fps}")
-				col.label(text=f"Require: {require_fps}")
+				col.label(text=f"Require: {requireFps}")
 				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "FPS"
 
-		if require_length_unit:
+		if requireLengthUnit:
 			current_length_unit = context.scene.unit_settings.length_unit
-			if require_length_unit != current_length_unit:
+			if requireLengthUnit != current_length_unit:
 				col = self.layout.box().column()
 				col.alert = True
 				col.label(icon="ERROR", text="Invalid Length Unit")
 				col.label(text=f"Current: {current_length_unit}")
-				col.label(text=f"Require: {require_length_unit}")
+				col.label(text=f"Require: {requireLengthUnit}")
 				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "LENGTH_UNIT"
 
-		if require_scale_length:
+		if requireScaleLength:
 			current_scale_length = context.scene.unit_settings.scale_length
-			if not jx.math.almost_eq(require_scale_length, current_scale_length):
+			if not jx.math.almost_eq(requireScaleLength, current_scale_length):
 				col = self.layout.box().column()
 				col.alert = True
 				col.label(icon="ERROR", text="Invalid Unit Scale (Scale Length)")
 				col.label(text=f"Current: {current_scale_length}")
-				col.label(text=f"Require: {require_scale_length}")
+				col.label(text=f"Require: {requireScaleLength}")
 				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "SCALE_LENGTH"
 
 		col = self.layout.column(align=True)

@@ -9,6 +9,9 @@ def relpath(p:str, rel_to:str):
 def to_unix(p:str):
 	return p.replace("\\", "/")
 
+def to_windows(p:str):
+	return p.replace("/", "\\")
+
 def basename(p:str):
 	return os.path.basename(p)
 
@@ -27,4 +30,18 @@ def change_ext(p:str, new_ext:str):
 def normpath(p:str):
 	return os.path.normpath(p)
 
+def findFileUpward(fromFolder:str, filename:str):
+	root = fromFolder
+
+	while True:
+		f = realpath(root + "/" + filename)
+
+		print(f"============> {f}")
+
+		parent = dirname(root)
+		if parent == root:
+			return None
+		if exists(f):
+			return f
+		root = parent
 

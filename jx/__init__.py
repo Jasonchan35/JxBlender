@@ -41,6 +41,7 @@ from . import (
 	types,
 	custom_prop,
 	project,
+	perforce,
 	selection,
 	view3d,
 #-----
@@ -64,6 +65,14 @@ def get_submodules(outList, module):
 get_submodules(sub_modules, sys.modules[__name__])
 
 @bpy.app.handlers.persistent
+def save_pre_handler(scene):
+	jx.perforce.checkoutCurrentFile()
+
+@bpy.app.handlers.persistent
+def save_post_handler(scene):
+	pass
+
+@bpy.app.handlers.persistent
 def load_post_handler(dummy):
 	for m in sub_modules:
 		if hasattr(m, 'on_app_handlers_load_post'):
@@ -71,6 +80,8 @@ def load_post_handler(dummy):
 
 def register():
 	bpy.app.handlers.load_post.append(load_post_handler)
+	bpy.app.handlers.save_pre.append(save_pre_handler)
+	bpy.app.handlers.save_post.append(save_post_handler)
 
 	for m in sub_modules:
 		# print(f"jx: register module {m.__name__}")
@@ -89,6 +100,15 @@ def register():
 	bpy.types.Object.jx_retarget_settings = bpy.props.PointerProperty(type=jx.anim.retarget.Settings)
 
 def unregister():
+	if save_pre_handler in bpy.app.handlers.save_pre:
+		bpy.app.handlers.save_pre.remove(save_pre_handler)
+
+	if save_post_handler in bpy.app.handlers.save_post:
+		bpy.app.handlers.save_post.remove(save_post_handler)
+
+	if load_post_handler in bpy.app.handlers.load_post:
+		bpy.app.handlers.load_post.remove(load_post_handler)
+
 	del bpy.types.Object.jx_retarget_settings
 
 	addon.unregister_all_classes()

@@ -4,6 +4,7 @@ import json
 
 import jx
 import jx.file
+import jx.path
 
 _instance = None
 
@@ -15,27 +16,19 @@ class Project:
 		self._rawDataPath = None
 		self._rawDataExportDir = None
 
-		self._require_fps = None # 30
-		self._require_length_unit = None # "CENTIMETERS"
-		self._require_scale_length = None # 0.01
+		self._requireFps = None # 30
+		self._requireLengthUnit = None # "CENTIMETERS"
+		self._requireScaleLength = None # 0.01
 
 		curFile = jx.file.currentBlenderFilename()
 		if not curFile:
 			raise RuntimeError("no path for current file, please save file is not yet saved")
 
-		root = jx.path.dirname(curFile)
+		projectFilename = jx.path.findFileUpward(jx.path.dirname(curFile), "JxProject.json")
+		if projectFilename is None:
+			raise RuntimeError("cannot find JxProject.json in parent folders")
 
-		while True:
-			projectFilename = jx.path.realpath(root + "/JxProject.json")
-			# print("  try read " + projectFilename)
-			parent = jx.path.dirname(root)
-			if parent == root:
-				raise RuntimeError("cannot find JxProject.json in parent folders")
-			if jx.path.exists(projectFilename):
-				break
-			root = parent
-
-		self._root = root
+		self._root = jx.path.dirname(projectFilename)
 		self._loadJson(projectFilename)
 		self._curFile = curFile
 		self._curFileRelPath = jx.path.relpath(curFile, self.rawDataPath())
@@ -69,9 +62,9 @@ class Project:
 		p = jx.path.remove_ext(p)
 		return jx.path.realpath(p)
 	
-	def require_fps(self): return self._require_fps
-	def require_length_unit(self): return self._require_length_unit
-	def require_scale_length(self): return self._require_scale_length
+	def requireFps(self): return self._requireFps
+	def requireLengthUnit(self): return self._requireLengthUnit
+	def requireScaleLength(self): return self._requireScaleLength
 
 	def _loadJson(self, filename):
 		print(f"loadJson({filename})")
@@ -86,9 +79,9 @@ class Project:
 
 		self._rawDataPath 			= data.get('rawDataPath')
 		self._rawDataExportDir 		= data.get('rawDataExportDir')
-		self._require_fps 			= data.get('require_fps')
-		self._require_length_unit 	= data.get('require_length_unit')
-		self._require_scale_length 	= data.get('require_scale_length')
+		self._requireFps 			= data.get('requireFps')
+		self._requireLengthUnit 	= data.get('requireLengthUnit')
+		self._requireScaleLength 	= data.get('requireScaleLength')
 
 def get():
 	global _instance
