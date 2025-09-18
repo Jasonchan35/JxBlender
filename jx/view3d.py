@@ -57,7 +57,7 @@ class ItemTrasnformPanel(jx.types.Panel):
 	# bl_options = {'DEFAULT_CLOSED'}
 
 	def drawTransform(self, context):
-		target = bpy.context.object
+		target = context.object # bpy.context.object
 		poseBone = getActivePoseBone()
 		if poseBone:
 			target = poseBone
@@ -119,6 +119,8 @@ class ItemTrasnformPanel(jx.types.Panel):
 
 
 	def draw(self, context):
+		if context.object == None: return
+
 		self.drawTransform(context)
 
 class ItemTrasnformToolPanel(jx.types.Panel):
@@ -131,6 +133,8 @@ class ItemTrasnformToolPanel(jx.types.Panel):
 	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, context):
+		if context.object == None: return
+
 		col = self.layout.column(align=True)
 
 		col.label(text="Snap")
@@ -194,6 +198,8 @@ class InfoPanel(jx.types.Panel):
 		self.drawItem(col2, "Scale:", f"({scale.x:0.3f}, {scale.y:0.3f}, {scale.z:0.3f})")
 
 	def draw(self, context):
+		if context.object == None: return
+		
 		obj = bpy.context.object
 		if not obj: return
 

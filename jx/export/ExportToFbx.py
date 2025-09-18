@@ -497,10 +497,6 @@ class ExportPanel(jx.types.Panel):
 	bl_category = "JX"
 
 	def draw(self, context):
-		if context.object == None: return
-		# box.prop(context.scene.render, "fps")
-		# box.prop(context.scene.unit_settings, "length_unit")
-
 		proj 				= jx.project.get()
 		requireFps 			= proj.requireFps()
 		requireScaleLength	= proj.requireScaleLength()

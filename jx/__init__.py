@@ -74,9 +74,7 @@ def save_post_handler(scene):
 
 @bpy.app.handlers.persistent
 def load_post_handler(dummy):
-	for m in sub_modules:
-		if hasattr(m, 'on_app_handlers_load_post'):
-			m.on_app_handlers_load_post()
+	jx.anim.nla.on_app_handlers_load_post
 
 def register():
 	bpy.app.handlers.load_post.append(load_post_handler)

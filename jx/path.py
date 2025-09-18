@@ -35,9 +35,6 @@ def findFileUpward(fromFolder:str, filename:str):
 
 	while True:
 		f = realpath(root + "/" + filename)
-
-		print(f"============> {f}")
-
 		parent = dirname(root)
 		if parent == root:
 			return None
