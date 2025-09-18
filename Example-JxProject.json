@@ -1,4 +1,7 @@
 {
 	"rawDataPath": "RawData",
-	"rawDataExportDir": "Unreal/JxLocalTemp/JxAutoImport"	
+	"rawDataExportDir": "Unreal/JxLocalTemp/JxAutoImport",
+	"requireFps": 30,
+	"requireLengthUnit": "CENTIMETERS",
+	"requireScaleLength": 1	
 }
