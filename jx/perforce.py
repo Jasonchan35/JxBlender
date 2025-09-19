@@ -45,10 +45,27 @@ def get_PerUserSettings():
 	
 	return PerUserSettings_instance
 
+def checkP4login():
+	cmd = ['p4','login', '-s']
+	env = os.environ.copy()	
+	result = subprocess.run(
+		cmd,
+		text=True,
+		encoding='utf-8',
+		shell=True,
+		env=env,
+		check=False
+	)
+
+	if result.returncode != 0:
+		raise RuntimeError("Perforce: login required, cmd:`p4 login` or run p4v")
+
 def runP4cmd(*args):
 	settings = get_PerUserSettings()
 	if settings is None:
 		return
+
+	checkP4login()
 
 	cmd = ['p4','-c', settings.workspace]
 	for a in args:
@@ -59,7 +76,7 @@ def runP4cmd(*args):
 
 	print(f'runP4cmd {cmd}')
 
-	subprocess.run(
+	result = subprocess.run(
 		cmd,
 		text=True,
 		encoding='utf-8',
@@ -67,7 +84,9 @@ def runP4cmd(*args):
 		env=env,
 		check=True
 	)
-	
+
+	return result.returncode == 0
+
 def checkout(filename):
 	runP4cmd('edit', filename)
 

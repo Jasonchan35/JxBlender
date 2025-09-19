@@ -2,25 +2,22 @@ import bpy
 import inspect
 import os.path
 
-from jx.reflection import classname
+import jx
+import jx.reflection
 
-g_error_msg = ""
+class ReportErrorOperator(jx.types.Operator):
+	bl_idname = "jx.debug_report_error"
+	bl_label = "jx.debug_report_error"
 
-class ErrorOperator(bpy.types.Operator):
-	bl_idname = "jx.error_operator"
-	bl_label = "jx.error_operator"
+	msg: bpy.props.StringProperty()
 
 	def execute(self, context):
-		global g_error_msg
 		#this is where I send the message
-		self.report({'ERROR'}, g_error_msg)
-
+		self.report({'ERROR'}, self.msg)
 		return {'CANCELLED'}
 
-# def error(msg):
-# 	global g_error_msg
-# 	g_error_msg = msg
-# 	bpy.ops.jx.error_operator()
+def reportError(msg):
+	bpy.ops.jx.debug_report_error('INVOKE_DEFAULT', msg=msg)
 
 def dump(obj):
 	info = inspect.getframeinfo(inspect.stack()[1][0])
@@ -28,7 +25,7 @@ def dump(obj):
 	print(obj)
 	for attr in dir(obj):
 		v = getattr(obj, attr)
-		print(f"  .{attr} ({classname(v)}) = {v}")
+		print(f"  .{attr} ({jx.reflection.classname(v)}) = {v}")
 
 def deepPrint(obj, lv=0):
 	print(obj)
