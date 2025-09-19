@@ -366,7 +366,7 @@ class AnimGraphEditorShowChannelsPanel(jx.types.Panel):
 	bl_order = 1000
 	bl_space_type = "GRAPH_EDITOR"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 
 	def draw(self, context):
 		col = self.layout.column(align=True)
@@ -433,7 +433,7 @@ class AnimGraphEditorKeyframePanel(jx.types.Panel):
 	bl_order = 2000
 	bl_space_type = "GRAPH_EDITOR"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 
 	def draw(self, context):
 		col = self.layout.column(align=True)
@@ -508,7 +508,7 @@ class AnimGraphEditorHandleTypePanel(jx.types.Panel):
 	bl_order = 5000
 	bl_space_type = "GRAPH_EDITOR"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 
 	def drawEasing(self, layout, currentType, label, easing):
 		row = layout.column(align=True).split(factor=0.25, align=True)
@@ -570,7 +570,7 @@ class AnimGraphEditorCurveExtrapolationPanel(jx.types.Panel):
 	bl_order = 6000
 	bl_space_type = "GRAPH_EDITOR"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 
 	def draw(self, context):
 		currentType = None

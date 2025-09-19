@@ -41,9 +41,6 @@ class OP_Export(jx.types.Operator):
 		self.exportList_textures = set()
 		self.exportList_armatures = set()
 
-	def __del__(self):
-		super().__del__()
-
 	def exportObject(self, obj:bpy.types.Object):
 		print(f"exportObject \"{obj.name}\"")
 
@@ -74,8 +71,7 @@ class OP_Export(jx.types.Operator):
 			outInfo["#error"] = "tex is None"
 			return
 
-		outInfo["name"] = tex.name
-
+		# outInfo["name"] = tex.name
 		if tex.image == None:
 			outInfo["#error"] = "tex.image == None"
 			return
@@ -85,12 +81,13 @@ class OP_Export(jx.types.Operator):
 		outInfo["colorspace"] = tex.image.colorspace_settings.name
 		outInfo["alpha_mode"] = tex.image.alpha_mode
 
+		self.outInfo_textures[path] = outInfo
+
 	def exportTexture(self, tex):
 		if tex == None: return
-		print(f"  tex \"{tex.name}\" {tex.__class__}")
+		# print(f"  tex \"{tex.name}\" {tex.__class__}")
 		outTexInfo = {}
 		self.exportTextureInfo(tex, outTexInfo)
-		self.outInfo_textures[tex.name] = outTexInfo
 
 		if tex == None: return
 		if "path" not in outTexInfo: return
@@ -181,8 +178,8 @@ class OP_Export(jx.types.Operator):
 		self.outInfo = {
 			"sourceFile":	jx.file.currentBlenderFilename(),
 			"objects":		self.outInfo_objects,
-			"materials":	self.outInfo_materials,
 			"textures":		self.outInfo_textures,
+			"materials":	self.outInfo_materials,
 		}
 
 		outFileDir = os.path.dirname(self.outFilename)
@@ -468,7 +465,7 @@ class OP_FixSceneUnit(jx.types.Operator):
 	mode: bpy.props.StringProperty()
 
 	def execute(self, context):
-		proj 				= jx.project.get()
+		proj 				= jx.project.get(False)
 		requireFps 			= proj.requireFps()
 		requireScaleLength	= proj.requireScaleLength()
 		requireLengthUnit	= proj.requireLengthUnit()
@@ -482,8 +479,12 @@ class OP_FixSceneUnit(jx.types.Operator):
 		elif self.mode == "SCALE_LENGTH":
 			if jx.math.almost_eq0(requireScaleLength):
 				raise RuntimeError("Cannot set unt scale length to zero !!")
-
 			bpy.context.scene.unit_settings.scale_length = requireScaleLength
+			
+			s = context.space_data
+			if s and s.type == 'VIEW_3D':
+				s.clip_start = 0.01 / requireScaleLength
+				s.clip_end   = 1000 / requireScaleLength
 
 		return {'FINISHED'}
 
@@ -494,10 +495,10 @@ class ExportPanel(jx.types.Panel):
 	bl_order = 2000
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 
-	def draw(self, context):
-		proj 				= jx.project.get()
+	def drawFixSceneUnit(self, context):
+		proj 				= jx.project.get(False)
 		requireFps 			= proj.requireFps()
 		requireScaleLength	= proj.requireScaleLength()
 		requireLengthUnit	= proj.requireLengthUnit()
@@ -531,6 +532,9 @@ class ExportPanel(jx.types.Panel):
 				col.label(text=f"Current: {current_scale_length}")
 				col.label(text=f"Require: {requireScaleLength}")
 				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "SCALE_LENGTH"
+
+	def draw(self, context):
+		self.drawFixSceneUnit(context)
 
 		col = self.layout.column(align=True)
 		col.operator(OP_ExportMeshToFbx.bl_idname, text="Export Mesh")

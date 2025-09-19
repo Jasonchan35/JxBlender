@@ -9,23 +9,31 @@ import jx.path
 _instance = None
 
 class Project:
-	def __init__(self):
+	def __init__(self, reportError):
 		self._root = None
 		self._curFile = None
+		self._curFileRelPath = None
 		self._relPath = None
 		self._rawDataPath = None
 		self._rawDataExportDir = None
 
-		self._requireFps = None # 30
-		self._requireLengthUnit = None # "CENTIMETERS"
-		self._requireScaleLength = None # 0.01
+		if True: # Unreal
+			self._requireFps = None
+			self._requireLengthUnit = "CENTIMETERS"
+			self._requireScaleLength = 0.01
+		else:
+			self._requireFps = None # 24
+			self._requireLengthUnit = None # "METERS"
+			self._requireScaleLength = None # 1
 
 		curFile = jx.file.currentBlenderFilename()
 		if not curFile:
+			if not reportError: return
 			raise RuntimeError("no path for current file, please save file is not yet saved")
 
 		projectFilename = jx.path.findFileUpward(jx.path.dirname(curFile), "JxProject.json")
 		if projectFilename is None:
+			if not reportError: return
 			raise RuntimeError("cannot find JxProject.json in parent folders")
 
 		self._root = jx.path.dirname(projectFilename)
@@ -83,10 +91,10 @@ class Project:
 		self._requireLengthUnit 	= data.get('requireLengthUnit')
 		self._requireScaleLength 	= data.get('requireScaleLength')
 
-def get():
+def get(reportError=True):
 	global _instance
 	if not _instance or _instance._curFile != jx.file.currentBlenderFilename():
-		_instance = Project()
+		_instance = Project(reportError)
 	return _instance
 
 class OP_open_file_in_file_explorer(jx.types.Operator):

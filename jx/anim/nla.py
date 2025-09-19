@@ -646,7 +646,7 @@ class NlaPanel(jx.types.Panel):
 	bl_order = 4000
 	bl_space_type = "NLA_EDITOR"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 
 	def draw(self, context):
 		rig = context.object
@@ -726,7 +726,7 @@ class NlaActiveStripPanel(jx.types.Panel):
 	bl_order = 5000
 	bl_space_type = "NLA_EDITOR"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 
 	def draw(self, context):
 		strip = getSingleSelectedStrip()

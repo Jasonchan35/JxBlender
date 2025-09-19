@@ -53,7 +53,7 @@ class ItemTrasnformPanel(jx.types.Panel):
 	bl_order = 1000
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
-	bl_category = "Item"
+	bl_category = "JxBlender"
 	# bl_options = {'DEFAULT_CLOSED'}
 
 	def drawTransform(self, context):
@@ -129,7 +129,7 @@ class ItemTrasnformToolPanel(jx.types.Panel):
 	bl_order = 1005
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
-	bl_category = "Item"
+	bl_category = "JxBlender"
 	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, context):
@@ -170,7 +170,7 @@ class InfoPanel(jx.types.Panel):
 	bl_order = 2000
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
-	bl_category = "Item"
+	bl_category = "JxBlender"
 	bl_options = {'DEFAULT_CLOSED'}
 	# bl_options = {'DEFAULT_CLOSED'}
 
@@ -224,7 +224,7 @@ class View3dPanel(jx.types.Panel):
 	bl_order = 9000
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, context):

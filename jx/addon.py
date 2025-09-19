@@ -42,12 +42,13 @@ class OP_Reload(bpy.types.Operator):
 
 class AddonPanel(bpy.types.Panel):
 	bl_idname = "JX_PT_ADDON_PANEL"
-	bl_label = "JX"
+	bl_label = "(JX) Development"
 	bl_order = 39000
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 #	bl_options = {'DEFAULT_CLOSED'}
 
 	def draw(self, context):
 		self.layout.operator(OP_Reload.bl_idname)
+		self.layout.operator("wm.console_toggle")

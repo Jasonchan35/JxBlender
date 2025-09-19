@@ -7,18 +7,25 @@ import jx.custom_prop
 import jx.export
 import jx.util
 
+class JX_MT_MainMenu_Development(bpy.types.Menu):
+	bl_idname = 'JX_MT_MainMenu_Development'
+	bl_label = 'Development'
+
+	def draw(self, context):
+		self.layout.operator(jx.addon.OP_Reload.bl_idname)
+		self.layout.operator("wm.console_toggle")
+
+
 class JX_MT_MainMenu(jx.types.Menu):
 	bl_idname = "JX_MT_MainMenu"
 	bl_label = "JxBlender"
 
 	def draw(self, context):
-		layout = self.layout
-#		layout.label(text="This is a label")
-		layout.operator(jx.addon.OP_Reload.bl_idname)
-		layout.separator()
-		layout.menu(jx.export.ExportToFbx.JX_MT_MainMenu_ExportToFbx.bl_idname)
-		layout.menu(jx.project.JX_MT_MainMenu_Project.bl_idname)
-		layout.menu(jx.custom_prop.JX_MT_MainMenu_CustomProp.bl_idname)
+		self.layout.menu(jx.export.ExportToFbx.JX_MT_MainMenu_ExportToFbx.bl_idname)
+		self.layout.menu(jx.project.JX_MT_MainMenu_Project.bl_idname)
+		self.layout.menu(jx.custom_prop.JX_MT_MainMenu_CustomProp.bl_idname)
+		self.layout.separator()
+		self.layout.menu(JX_MT_MainMenu_Development.bl_idname)
 
 def menu_func(self, context):
 	layout = self.layout

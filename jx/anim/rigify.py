@@ -470,7 +470,7 @@ class RigifyPropertyPanel(jx.types.Panel):
 	bl_order = 100
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 	bl_options = {'DEFAULT_CLOSED'}
 
 	@classmethod
@@ -545,7 +545,7 @@ class RigifyCreatePanel(jx.types.Panel):
 	bl_order = 4000
 	bl_space_type = "VIEW_3D"
 	bl_region_type = "UI"
-	bl_category = "JX"
+	bl_category = "JxBlender"
 	bl_options = {'DEFAULT_CLOSED'}
 
 	@classmethod
