@@ -10,7 +10,7 @@ import jx.util
 export_opt_axis_forward = 'X'
 export_opt_axis_up = 'Z'
 export_opt_use_space_transform = True
-export_opt_use_armature_deform_only = True
+export_opt_use_armature_deform_only = False
 
 export_opt_global_scale = 1
 export_opt_apply_unit_scale = True
