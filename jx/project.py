@@ -19,10 +19,12 @@ class Project:
 
 		if True: # Unreal
 			self._requireFps = None
+			self._requireUnitsystem = "METRIC"
 			self._requireLengthUnit = "CENTIMETERS"
 			self._requireScaleLength = 0.01
 		else:
 			self._requireFps = None # 24
+			self._requireUnitsystem = None
 			self._requireLengthUnit = None # "METERS"
 			self._requireScaleLength = None # 1
 
@@ -71,6 +73,7 @@ class Project:
 		return jx.path.realpath(p)
 	
 	def requireFps(self): return self._requireFps
+	def requireUnitSystem(self): return self._requireUnitSystem
 	def requireLengthUnit(self): return self._requireLengthUnit
 	def requireScaleLength(self): return self._requireScaleLength
 
@@ -88,6 +91,7 @@ class Project:
 		self._rawDataPath 			= data.get('rawDataPath')
 		self._rawDataExportDir 		= data.get('rawDataExportDir')
 		self._requireFps 			= data.get('requireFps')
+		self._requireUnitSystem		= data.get('requireUnitSystem')
 		self._requireLengthUnit 	= data.get('requireLengthUnit')
 		self._requireScaleLength 	= data.get('requireScaleLength')
 

@@ -467,11 +467,14 @@ class OP_FixSceneUnit(jx.types.Operator):
 	def execute(self, context):
 		proj 				= jx.project.get(False)
 		requireFps 			= proj.requireFps()
+		requireUnitSystem	= proj.requireUnitSystem()
 		requireScaleLength	= proj.requireScaleLength()
 		requireLengthUnit	= proj.requireLengthUnit()
 				
 		if self.mode == "FPS":
 			bpy.context.scene.render.fps = requireFps
+		elif self.mode == "UNIT_SYSTEM":
+			bpy.context.scene.unit_settings.system = requireUnitSystem
 
 		elif self.mode == "LENGTH_UNIT":
 			bpy.context.scene.unit_settings.length_unit = requireLengthUnit
@@ -500,6 +503,7 @@ class ExportPanel(jx.types.Panel):
 	def drawFixSceneUnit(self, context):
 		proj 				= jx.project.get(False)
 		requireFps 			= proj.requireFps()
+		requireUnitSystem	= proj.requireUnitSystem()
 		requireScaleLength	= proj.requireScaleLength()
 		requireLengthUnit	= proj.requireLengthUnit()
 
@@ -512,6 +516,16 @@ class ExportPanel(jx.types.Panel):
 				col.label(text=f"Current: {current_fps}")
 				col.label(text=f"Require: {requireFps}")
 				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "FPS"
+
+		if requireUnitSystem:
+			current_unit_system = context.scene.unit_settings.system
+			if requireUnitSystem != current_unit_system:
+				col = self.layout.box().column()
+				col.alert = True
+				col.label(icon="ERROR", text="Invalid Unit System")
+				col.label(text=f"Current: {current_unit_system}")
+				col.label(text=f"Require: {requireUnitSystem}")
+				col.operator(OP_FixSceneUnit.bl_idname, text="Fix Now" ).mode = "UNIT_SYSTEM"
 
 		if requireLengthUnit:
 			current_length_unit = context.scene.unit_settings.length_unit
