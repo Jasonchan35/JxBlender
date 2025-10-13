@@ -176,6 +176,7 @@ class OP_Export(jx.types.Operator):
 			return
 
 		self.outInfo = {
+			"exportSoftware": "blender-" + bpy.app.version_string,
 			"sourceFile":	jx.file.currentBlenderFilename(),
 			"objects":		self.outInfo_objects,
 			"textures":		self.outInfo_textures,
@@ -222,7 +223,8 @@ class OP_Export(jx.types.Operator):
 					apply_unit_scale 	= export_opt_apply_unit_scale,
 					apply_scale_options = export_opt_apply_scale_options,
 					use_space_transform = export_opt_use_space_transform,
-
+					
+					armature_nodetype = 'NULL',
 					use_armature_deform_only = export_opt_use_armature_deform_only,
 					bake_anim = False,
 
@@ -448,8 +450,8 @@ class OP_ExportMeshToFbx(OP_Export):
 		self.doExport()
 		return {'FINISHED'}	
 
-class JX_MT_MainMenu_ExportToFbx(jx.types.Menu):
-	bl_idname = 'JX_MT_MainMenu_ExportToFbx'
+class JX_MT_ExportToFbx(jx.types.Menu):
+	bl_idname = 'JX_MT_ExportToFbx'
 	bl_label = 'Export To Fbx'
 
 	def draw(self, context):

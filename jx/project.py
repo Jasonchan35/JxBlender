@@ -138,8 +138,8 @@ class OP_open_unreal_content_folder(jx.types.Operator):
 		return {'FINISHED'}
 
 
-class JX_MT_MainMenu_Project(bpy.types.Menu):
-	bl_idname = 'JX_MT_MainMenu_Project'
+class JX_MT_Project(bpy.types.Menu):
+	bl_idname = 'JX_MT_Project'
 	bl_label = 'Project'
 
 	def draw(self, context):

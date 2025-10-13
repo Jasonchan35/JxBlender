@@ -6,9 +6,10 @@ import jx.types
 import jx.custom_prop
 import jx.export
 import jx.util
+import jx.unreal_util
 
-class JX_MT_MainMenu_Development(bpy.types.Menu):
-	bl_idname = 'JX_MT_MainMenu_Development'
+class JX_MT_Development(bpy.types.Menu):
+	bl_idname = 'JX_MT_Development'
 	bl_label = 'Development'
 
 	def draw(self, context):
@@ -21,11 +22,12 @@ class JX_MT_MainMenu(jx.types.Menu):
 	bl_label = "JxBlender"
 
 	def draw(self, context):
-		self.layout.menu(jx.export.ExportToFbx.JX_MT_MainMenu_ExportToFbx.bl_idname)
-		self.layout.menu(jx.project.JX_MT_MainMenu_Project.bl_idname)
-		self.layout.menu(jx.custom_prop.JX_MT_MainMenu_CustomProp.bl_idname)
+		self.layout.menu(jx.export.ExportToFbx.JX_MT_ExportToFbx.bl_idname)
+		self.layout.menu(jx.project.JX_MT_Project.bl_idname)
+		self.layout.menu(jx.custom_prop.JX_MT_CustomProp.bl_idname)
+		self.layout.menu(jx.unreal_util.JX_MT_Unreal.bl_idname)
 		self.layout.separator()
-		self.layout.menu(JX_MT_MainMenu_Development.bl_idname)
+		self.layout.menu(JX_MT_Development.bl_idname)
 
 def menu_func(self, context):
 	layout = self.layout

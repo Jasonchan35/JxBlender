@@ -2,11 +2,11 @@
 	"folders": [
 		{
 			"name": "Blender",
-			"path": "C:/Program Files/Blender Foundation/Blender 3.5/3.5/scripts/modules/bpy"
+			"path": "C:/Program Files/Blender Foundation/Blender 4.5/4.5/scripts/modules/bpy"
 		},
 		// {
 		// 	"name": "Blender Add-on",
-		// 	"path": "C:/Program Files/Blender Foundation/Blender 3.5/3.5/scripts/addons"
+		// 	"path": "C:/Program Files/Blender Foundation/Blender 4.5/4.5/scripts/addons"
 		// },
 		{
 			"path": "jx"
@@ -16,18 +16,18 @@
 		"editor.insertSpaces": false,
 		"python.linting.enabled": true,
 		"pylint.path": [
-			"C:/Program Files/Blender Foundation/Blender 3.5/3.5/scripts/modules/",
-			"C:/Program Files/Blender Foundation/Blender 3.5/3.5/scripts/addons",
+			"C:/Program Files/Blender Foundation/Blender 4.5/4.5/scripts/modules/",
+			"C:/Program Files/Blender Foundation/Blender 4.5/4.5/scripts/addons",
 			"${workspaceFolder}"
 		],
 		"python.autoComplete.extraPaths": [
-			"C:/Program Files/Blender Foundation/Blender 3.5/3.5/scripts/modules/",
-			"C:/Program Files/Blender Foundation/Blender 3.5/3.5/scripts/addons",
+			"C:/Program Files/Blender Foundation/Blender 4.5/4.5/scripts/modules/",
+			"C:/Program Files/Blender Foundation/Blender 4.5/4.5/scripts/addons",
 			"${workspaceFolder}"
 		],
 		"python.analysis.extraPaths": [
-			"C:/Program Files/Blender Foundation/Blender 3.5/3.5/scripts/modules/",
-			"C:/Program Files/Blender Foundation/Blender 3.5/3.5/scripts/addons",
+			"C:/Program Files/Blender Foundation/Blender 4.5/4.5/scripts/modules/",
+			"C:/Program Files/Blender Foundation/Blender 4.5/4.5/scripts/addons",
 			"${workspaceFolder}"
 		]
 	}
