@@ -1,6 +1,7 @@
 import os
 import os.path
 
+import mathutils
 import bpy
 import jx
 import jx.file
@@ -22,6 +23,11 @@ export_opt_path_mode = "RELATIVE"
 export_opt_use_custom_props = True
 export_opt_use_metadata = True
 
+my_export_opt_reset_object_transform = True
+my_export_opt_fix_invalid_object_name = True
+
+def to_xyz_list(v):
+	return [v.x, v.y, v.z]
 
 class OP_Export(jx.types.Operator):
 	bl_idname = "scene.jx_export_to_fbx"
@@ -44,16 +50,23 @@ class OP_Export(jx.types.Operator):
 	def exportObject(self, obj:bpy.types.Object):
 		print(f"exportObject \"{obj.name}\"")
 
-		# move object to origin, so object pivot will be used in Game Engine
-		if obj.parent == None:
-			obj.location = (0,0,0)
-
+		world_matrix = obj.matrix_world
 		outInfo_matSlots = []
 		outInfo = {
 			#"jxProps": jx.custom_prop.get_all_jx_prop(obj),
+			"type": obj.type,
+			"parent": "",
+			#
+			"world_location" : to_xyz_list(world_matrix.to_translation()),
+			"world_rotation" : to_xyz_list(world_matrix.to_euler()),
+			"world_scale"    : to_xyz_list(world_matrix.to_scale()),
+			#
 			"materialSlots": outInfo_matSlots
 		}
 		self.outInfo_objects[obj.name] = outInfo
+
+		if obj.parent:
+			outInfo["parent"] = obj.parent.name
 
 		for matSlot in obj.material_slots:
 			mat = matSlot.material
@@ -171,6 +184,12 @@ class OP_Export(jx.types.Operator):
 		for input in matSurface.inputs:
 			self.exportMaterialInput(input, outInfo_inputs)
 
+	def fix_invalid_name(self, obj):
+		if not my_export_opt_fix_invalid_object_name: return
+		if not obj: return
+		new_name = obj.name.replace(".", "_")
+		obj.name = new_name
+
 	def doExportFbx(self):
 		if len(self.collection.all_objects) <= 0:
 			return
@@ -193,6 +212,8 @@ class OP_Export(jx.types.Operator):
 				obj.data.pose_position = 'REST'
 			if obj.hide_render: 
 				continue
+
+			self.fix_invalid_name(obj)
 			self.exportList_objects.add(obj)
 		
 		for obj in self.exportList_objects:
@@ -203,6 +224,16 @@ class OP_Export(jx.types.Operator):
 
 		for tex in self.exportList_textures:
 			self.exportTexture(tex)
+
+		# move object to origin, so object pivot will be used in Game Engine
+		if my_export_opt_reset_object_transform:
+			for obj in self.exportList_objects:
+				obj.location              = (0,0,0)
+				obj.rotation_euler        = (0,0,0)
+				obj.rotation_quaternion   = (1,0,0,0)
+				obj.scale                 = (1,1,1)
+				# matrix_parent_inverse is not auto updated before export
+				obj.matrix_parent_inverse = mathutils.Matrix.Identity(4)
 
 		jx.json.saveToFile(self.outInfo, self.outFilename + ".fbx_jx_info")
 		jx.selection.select(self.exportList_objects)
