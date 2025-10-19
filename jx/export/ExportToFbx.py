@@ -7,6 +7,7 @@ import jx
 import jx.file
 import jx.types
 import jx.util
+import jx.custom_prop
 
 export_opt_axis_forward = 'X'
 export_opt_axis_up = 'Z'
@@ -462,7 +463,7 @@ class OP_ExportAnimTrackToFbx(OP_Export):
 	def execute(self, context):
 		self.doExport(context)
 		return {'FINISHED'}
-
+	
 class OP_ExportMeshToFbx(OP_Export):
 	bl_idname = "scene.jx_export_to_fbx_mesh"
 	bl_label = "Export Mesh"
@@ -485,7 +486,7 @@ class OP_ExportMeshToFbx(OP_Export):
 	def execute(self, context):
 		# print(f"\n\n==== {self.__class__.__module__}.{self.__class__.__name__} ====")
 		self.doExport()
-		return {'FINISHED'}	
+		return {'FINISHED'}
 
 class JX_MT_ExportToFbx(jx.types.Menu):
 	bl_idname = 'JX_MT_ExportToFbx'

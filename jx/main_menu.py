@@ -7,6 +7,7 @@ import jx.custom_prop
 import jx.export
 import jx.util
 import jx.unreal_util
+import jx.lod
 
 class JX_MT_Development(bpy.types.Menu):
 	bl_idname = 'JX_MT_Development'
@@ -26,6 +27,7 @@ class JX_MT_MainMenu(jx.types.Menu):
 		self.layout.menu(jx.project.JX_MT_Project.bl_idname)
 		self.layout.menu(jx.custom_prop.JX_MT_CustomProp.bl_idname)
 		self.layout.menu(jx.unreal_util.JX_MT_Unreal.bl_idname)
+		self.layout.menu(jx.lod.JX_MT_LOD.bl_idname)
 		self.layout.separator()
 		self.layout.menu(JX_MT_Development.bl_idname)
 

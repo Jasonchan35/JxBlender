@@ -49,7 +49,6 @@ class OP_add_jx_custom_props(jx.types.Operator):
 			object_add_jx_custom_props(obj)
 		return {'FINISHED'}
 
-
 class JX_MT_CustomProp(bpy.types.Menu):
 	bl_idname = 'JX_MT_CustomProp'
 	bl_label = 'Custom Prop'
