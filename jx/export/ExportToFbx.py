@@ -116,10 +116,10 @@ class OP_Export(jx.types.Operator):
 			jx.file.copy_if_newer(srcPath, dstPath)
 			#jx.file.copy(srcPath, dstPath)
 
-	def exportMaterialInput(self, input, outInfo_inputs):
+	def exportMaterialInput(self, input_name, input, outInfo_inputs):
 		#print(f"    input {input.name} {input.default_value} {input.__class__}")
 		outInfo = {}
-		outInfo_inputs[input.name] = outInfo
+		outInfo_inputs[input_name] = outInfo
 
 		if not input.is_linked or len(input.links) <= 0:
 			outInfo["value"] = jx.json.toValue(input.default_value)
@@ -136,6 +136,12 @@ class OP_Export(jx.types.Operator):
 
 			if tex not in self.exportList_textures:
 				self.exportList_textures.add(tex)
+		elif inputNode.type == "NORMAL_MAP":
+			normalMapNode = inputNode
+			colorInput = normalMapNode.inputs['Color']
+			self.exportMaterialInput(input_name, colorInput, outInfo_inputs)
+		else:
+			print(f"Unknown texture inputNode.type = {inputNode.type}")
 
 	def exportMaterial(self, mat):
 		if mat == None: return
@@ -182,7 +188,7 @@ class OP_Export(jx.types.Operator):
 		outInfo_inputs = {}
 		outInfo["inputs"] = outInfo_inputs
 		for input in matSurface.inputs:
-			self.exportMaterialInput(input, outInfo_inputs)
+			self.exportMaterialInput(input.name, input, outInfo_inputs)
 
 	def fix_invalid_name(self, obj):
 		if not my_export_opt_fix_invalid_object_name: return
