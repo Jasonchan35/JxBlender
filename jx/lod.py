@@ -15,9 +15,9 @@ def show_lod_level(show_level):
 				continue
 			try:
 				lv = (int)(name_parts[-1])
+				obj.hide_set(lv != show_level)
 			except:
-				pass
-			obj.hide_set(lv != show_level)
+				continue
 
 def object_add_fbx_lod_grop_custom_prop(obj):
 	if obj == None: return
