@@ -197,8 +197,62 @@ class OP_Export(jx.types.Operator):
 		new_name = obj.name.replace(".", "_")
 		obj.name = new_name
 
+	def doJoinMesh(self, parent, out_name):
+		for obj in parent.children:
+			if obj.type != 'MESH': continue
+
+			print(f"  join mesh {obj.name}")
+			if obj.data.users > 1:
+				obj.data = obj.data.copy() # break shared link mesh before apply modifier and apply_transform
+
+			bpy.context.view_layer.objects.active = obj
+			for modifier in obj.modifiers:
+				if not modifier.show_viewport: continue
+				bpy.ops.object.modifier_apply(modifier=modifier.name)
+
+			bpy.ops.object.transform_apply(location=True, rotation=True, scale=True)
+
+		# ----------
+		bpy.context.view_layer.objects.active = None
+		bpy.ops.object.select_all(action='DESELECT')
+		for obj in parent.children:
+			if obj.type != 'MESH': continue
+			obj.select_set(True)
+			bpy.context.view_layer.objects.active = obj
+
+		if not bpy.context.view_layer.objects.active:
+			print("  no mesh to join")
+			return
+
+		bpy.ops.object.join()
+		newObj = bpy.context.view_layer.objects.active
+		if not newObj: return
+		newObj.name = out_name
+
+	def doAutoAction(self, parent, out_name, action_):
+		print("  AutoAction={action_} on {parent.name}")
+		action = action_.lower()
+		if action == "join":
+			self.doJoinMesh(parent, out_name)
+			return
+		print("Unknown action {action_}")
+
+
 	def doExportFbx(self):
-		if len(self.collection.all_objects) <= 0:
+		if bpy.context.mode != 'OBJECT':
+			bpy.ops.object.mode_set(mode='OBJECT')
+
+		# for child in self.export_collection.objects:   # might crash blender when join mesh, because it will change the objects in the list inside the for-loop 
+		direct_object_names = [obj.name for obj in self.export_collection.objects]
+		for childName in direct_object_names:
+			obj = self.export_collection.objects.get(childName)
+			if not obj: continue
+
+			token = childName.split("-")
+			for i in range(1, len(token)):
+				self.doAutoAction(obj, token[0], token[i])
+
+		if len(self.export_collection.all_objects) <= 0:
 			return
 
 		self.outInfo = {
@@ -213,7 +267,7 @@ class OP_Export(jx.types.Operator):
 		os.makedirs(outFileDir, exist_ok=True)
 
 		# convert from bpy.types.Collection to python set()
-		for obj in self.collection.all_objects:
+		for obj in self.export_collection.all_objects:
 			if obj.type == 'ARMATURE':
 				self.exportList_armatures.add(obj)
 				obj.data.pose_position = 'REST'
@@ -342,7 +396,7 @@ class OP_Export(jx.types.Operator):
 		controlRig = None
 		exportRig  = None
 
-		for obj in self.collection.all_objects:
+		for obj in self.export_collection.all_objects:
 			if obj.type == 'ARMATURE' and not obj.hide_render:
 				if exportRig:
 					raise RuntimeError("only support single armature to export")
@@ -454,7 +508,7 @@ class OP_ExportAnimTrackToFbx(OP_Export):
 		proj = jx.project.get()
 		print(f"project.exportRoot = {proj.rawDataExportDir()}")
 
-		self.collection = bpy.data.collections["JX_EXPORT"]
+		self.export_collection = bpy.data.collections["JX_EXPORT"]
 		self.outFilename = proj.exportFilename()
 
 		self.exportAnimTrackToFbx(allTracks=self.allTracks)
@@ -474,7 +528,7 @@ class OP_ExportMeshToFbx(OP_Export):
 			raise RuntimeError("Error Export: Collection 'JX_EXPORT' ` not found")
 
 		proj = jx.project.get()
-		self.collection = bpy.data.collections["JX_EXPORT"]
+		self.export_collection = bpy.data.collections["JX_EXPORT"]
 		self.outFilename = proj.exportFilename()
 
 		print(f"project.rawDataExportDir = {proj.rawDataExportDir()}")
