@@ -19,12 +19,12 @@ class Project:
 
 		if True: # Unreal
 			self._requireFps = None
-			self._requireUnitsystem = "METRIC"
+			self._requireUnitSystem = "METRIC"
 			self._requireLengthUnit = "CENTIMETERS"
 			self._requireScaleLength = 0.01
 		else:
 			self._requireFps = None # 24
-			self._requireUnitsystem = None
+			self._requireUnitSystem = None
 			self._requireLengthUnit = None # "METERS"
 			self._requireScaleLength = None # 1
 
