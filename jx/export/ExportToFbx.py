@@ -9,8 +9,23 @@ import jx.types
 import jx.util
 import jx.custom_prop
 
-export_opt_axis_forward = 'X'
-export_opt_axis_up = 'Z'
+# Only Root Node Ratated
+# export_opt_axis_forward = 'Y'
+# export_opt_axis_up = 'Z'
+
+# FBX exportor Default
+export_opt_axis_forward = '-Z'
+export_opt_axis_up = 'Y'
+
+# Blender
+# export_opt_axis_forward = '-Y'
+# export_opt_axis_up = 'Z'
+
+# Unreal
+# export_opt_axis_forward = 'X'
+# export_opt_axis_up = 'Z'
+
+
 export_opt_use_space_transform = True
 export_opt_use_armature_deform_only = False
 
@@ -24,7 +39,6 @@ export_opt_path_mode = "RELATIVE"
 export_opt_use_custom_props = True
 export_opt_use_metadata = True
 
-my_export_opt_reset_object_transform = False
 my_export_opt_fix_invalid_object_name = True
 
 def to_xyz_list(v):
@@ -47,6 +61,22 @@ class OP_Export(jx.types.Operator):
 		self.exportList_materials = set()
 		self.exportList_textures = set()
 		self.exportList_armatures = set()
+
+		self.opt_reset_object_transform = False
+
+	def find_export_collection(self):
+		self.export_collection = None
+
+		for collect in bpy.data.collections:
+			if collect.name == "JX_EXPORT" or collect.name.startswith("JX_EXPORT_"):
+				print(f"export_collection = {collect.name}")
+				self.export_collection = collect
+				if collect.name == "JX_EXPORT_ITEMS":
+					self.opt_reset_object_transform = True
+
+		if not self.export_collection:
+			raise RuntimeError("Error Export: Collection 'JX_EXPORT' ` not found")
+
 
 	def exportObject(self, obj:bpy.types.Object):
 		print(f"exportObject \"{obj.name}\"")
@@ -238,7 +268,7 @@ class OP_Export(jx.types.Operator):
 		print("Unknown action {action_}")
 
 
-	def doExportFbx(self):
+	def doExportMeshToFbx(self):
 		if bpy.context.mode != 'OBJECT':
 			bpy.ops.object.mode_set(mode='OBJECT')
 
@@ -256,11 +286,15 @@ class OP_Export(jx.types.Operator):
 			return
 
 		self.outInfo = {
-			"exportSoftware": "blender-" + bpy.app.version_string,
-			"sourceFile":	jx.file.currentBlenderFilename(),
-			"objects":		self.outInfo_objects,
-			"textures":		self.outInfo_textures,
-			"materials":	self.outInfo_materials,
+			"exportSoftware"            : "blender-" + bpy.app.version_string,
+			"export_opt_axis_forward"   : export_opt_axis_forward,
+			"export_opt_axis_up"        : export_opt_axis_up,
+			"export_collection"         : self.export_collection.name,
+			"opt_reset_object_transform": self.opt_reset_object_transform,
+			"sourceFile"                : jx.file.currentBlenderFilename(),
+			"objects"                   : self.outInfo_objects,
+			"textures"                  : self.outInfo_textures,
+			"materials"                 : self.outInfo_materials,
 		}
 
 		outFileDir = os.path.dirname(self.outFilename)
@@ -287,7 +321,7 @@ class OP_Export(jx.types.Operator):
 			self.exportTexture(tex)
 
 		# move object to origin, so object pivot will be used in Game Engine
-		if my_export_opt_reset_object_transform:
+		if self.opt_reset_object_transform:
 			for obj in self.exportList_objects:
 				obj.location              = (0,0,0)
 				obj.rotation_euler        = (0,0,0)
@@ -479,7 +513,7 @@ class OP_Export(jx.types.Operator):
 		if bpy.data.is_dirty:
 			raise RuntimeError("please save file before export")
 		try:
-			self.doExportFbx()
+			self.doExportMeshToFbx()
 		except:
 			jx.file.revertBlenderFile()
 			raise
@@ -502,20 +536,14 @@ class OP_ExportAnimTrackToFbx(OP_Export):
 	allTracks : bpy.props.BoolProperty(default=False)
 
 	def doExport(self, context):
-		for key in bpy.data.collections:
-			if key.startswith("JX_EXPORT"):
-				print(f"export_collection = {key}")
-				self.export_collection = bpy.data.collections[key]
-				if key == "JX_EXPORT_ITEMS":
-					my_export_opt_reset_object_transform = True
+		self.find_export_collection()
 
-		if not self.export_collection:
-			raise RuntimeError("Error Export: Collection 'JX_EXPORT' ` not found")
-		
 		proj = jx.project.get()
 		print(f"project.exportRoot = {proj.rawDataExportDir()}")
+		print(f"project.rawDataExportDir = {proj.rawDataExportDir()}")
 
 		self.outFilename = proj.exportFilename()
+		print(f"outFilename = {self.outFilename}")
 
 		self.exportAnimTrackToFbx(allTracks=self.allTracks)
 		print(f"-------- Export Anim FINISHED --------\n")
@@ -530,14 +558,13 @@ class OP_ExportMeshToFbx(OP_Export):
 	bl_options = {"REGISTER", "UNDO"}
 
 	def doExport(self):
-		if "JX_EXPORT" not in bpy.data.collections:
-			raise RuntimeError("Error Export: Collection 'JX_EXPORT' ` not found")
+		self.find_export_collection()
 
 		proj = jx.project.get()
-		self.export_collection = bpy.data.collections["JX_EXPORT"]
-		self.outFilename = proj.exportFilename()
-
+		print(f"project.exportRoot = {proj.rawDataExportDir()}")
 		print(f"project.rawDataExportDir = {proj.rawDataExportDir()}")
+
+		self.outFilename = proj.exportFilename()
 		print(f"outFilename = {self.outFilename}")
 
 		self.exportMeshToFbx()
