@@ -24,7 +24,7 @@ export_opt_path_mode = "RELATIVE"
 export_opt_use_custom_props = True
 export_opt_use_metadata = True
 
-my_export_opt_reset_object_transform = True
+my_export_opt_reset_object_transform = False
 my_export_opt_fix_invalid_object_name = True
 
 def to_xyz_list(v):
@@ -502,13 +502,19 @@ class OP_ExportAnimTrackToFbx(OP_Export):
 	allTracks : bpy.props.BoolProperty(default=False)
 
 	def doExport(self, context):
-		if "JX_EXPORT" not in bpy.data.collections:
-			raise RuntimeError("Error Export: Collection 'JX_EXPORT' ` not found")
+		for key in bpy.data.collections:
+			if key.startswith("JX_EXPORT"):
+				print(f"export_collection = {key}")
+				self.export_collection = bpy.data.collections[key]
+				if key == "JX_EXPORT_ITEMS":
+					my_export_opt_reset_object_transform = True
 
+		if not self.export_collection:
+			raise RuntimeError("Error Export: Collection 'JX_EXPORT' ` not found")
+		
 		proj = jx.project.get()
 		print(f"project.exportRoot = {proj.rawDataExportDir()}")
 
-		self.export_collection = bpy.data.collections["JX_EXPORT"]
 		self.outFilename = proj.exportFilename()
 
 		self.exportAnimTrackToFbx(allTracks=self.allTracks)
