@@ -337,6 +337,7 @@ class OP_Export(jx.types.Operator):
 			bpy.ops.export_scene.fbx(
 					filepath = self.outFilename + ".fbx",
 					use_selection = True,
+					object_types = {'ARMATURE', 'CAMERA', 'EMPTY', 'LIGHT', 'MESH', 'OTHER'},
 
 					mesh_smooth_type 	= export_opt_mesh_smooth_type,
 					add_leaf_bones 		= export_opt_add_leaf_bones,
@@ -396,6 +397,7 @@ class OP_Export(jx.types.Operator):
 				bpy.ops.export_scene.fbx(
 						filepath = finalOutFilename,
 						use_selection = True,
+						object_types = {'ARMATURE', 'EMPTY'},
 
 						mesh_smooth_type 	= export_opt_mesh_smooth_type,
 						add_leaf_bones 		= export_opt_add_leaf_bones,
@@ -409,7 +411,6 @@ class OP_Export(jx.types.Operator):
 						apply_scale_options = export_opt_apply_scale_options,
 						use_space_transform = export_opt_use_space_transform,
 
-						object_types = {'ARMATURE', 'EMPTY'},
 						use_armature_deform_only = export_opt_use_armature_deform_only,
 						bake_anim = True,
 						bake_anim_use_all_bones = True,
