@@ -144,8 +144,11 @@ class OP_Export(jx.types.Operator):
 			srcPath = jx.path.realpath(f"{srcDir}/{path}")
 			dstPath = jx.path.realpath(f"{dstDir}/{path}")
 
-			jx.file.copy_if_newer(srcPath, dstPath)
-			#jx.file.copy(srcPath, dstPath)
+			if not jx.file.exists(srcPath):
+				self.reportWarning(f"cannot copy missing texture file '{srcPath}'")
+			else:
+				jx.file.copy_if_newer(srcPath, dstPath)
+				#jx.file.copy(srcPath, dstPath)
 
 	def exportMaterialInput(self, input_name, input, outInfo_inputs):
 		#print(f"    input {input.name} {input.default_value} {input.__class__}")
